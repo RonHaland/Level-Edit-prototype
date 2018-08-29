@@ -1,0 +1,23 @@
+
+#level{
+    display: block;
+    float: left;
+}
+#sidebar{
+    background-color: #555;
+    margin-left: 10px;
+    width: 182px;
+    display: block;
+    float: left;
+    height: 832px;
+    background-color: #555;
+    width:auto;
+    height: 812px;
+    padding: 10px;
+    margin-bottom: 10px;
+    color: #ddd;
+}
+#sidebar>div>label{
+    float: right;
+    clear: both;
+}

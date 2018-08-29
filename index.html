@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="script.js"></script>
+    </head>
+    <body>
+
+        <canvas id='level' style="background:gray;" oncontextmenu="return false;" width="608px" height="832"></canvas>
+        <div id="sidebar">
+            <div>
+                <label>Selected Item
+                    <select id="placeItem">
+                        <option value="select">Select</option>
+                        <option value="wall">Wall</option>
+                        <option value="player">Player</option>
+                        <option value="goal">Goal</option>
+                        <option value="tp">Teleporter</option>
+                    </select>
+                </label>
+                <label>Level Name
+                    <input id="levelName" type="text" placeholder="Level name" size="10" onchange="updateName()"></input>
+                </label>
+                <label>3 Stars
+                    <input id="level3star" type="number" onchange="updateStars()" min='500' value="2000" max='200000' maxlength="6" step="500"></input>
+                </label>
+                <label>2 Stars
+                    <input id="level1star" type="number" onchange="updateStars()" min='1000' value="3000" max='300000' step="500"></input>
+                </label>
+                <label>1 Stars
+                    <input id="level1star" type="number" onchange="updateStars()" min='1500' value="4000" max='400000' step="500"></input>
+                </label>
+                <label>
+                    <input type="button" value='test' onclick=""></input>
+                </label>
+            </div>
+        </div>
+    </body>
+</html>
