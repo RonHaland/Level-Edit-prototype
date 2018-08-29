@@ -2,13 +2,14 @@
 <html lang="en">
     <head>
         <link href="style.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="func.js"></script>
         <script type="text/javascript" src="script.js"></script>
     </head>
     <body>
 
         <canvas id='level' style="background:gray;" oncontextmenu="return false;" width="608px" height="832"></canvas>
         <div id="sidebar">
-            <div>
+            <div id="settings">
                 <label>Selected Item
                     <select id="placeItem">
                         <option value="select">Select</option>
@@ -33,6 +34,8 @@
                 <label>
                     <input type="button" value='test' onclick=""></input>
                 </label>
+            </div>
+            <div id="selected">
             </div>
         </div>
     </body>

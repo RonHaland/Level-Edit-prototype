@@ -1,4 +1,6 @@
-
+*{
+    font-family: sans-serif;
+}
 #level{
     display: block;
     float: left;
@@ -7,7 +9,8 @@
     background-color: #555;
     margin-left: 10px;
     width: 182px;
-    display: block;
+    display: flex;
+    flex-direction: column;
     float: left;
     height: 832px;
     background-color: #555;
@@ -20,4 +23,16 @@
 #sidebar>div>label{
     float: right;
     clear: both;
+}
+#sidebar>div{
+    padding: 10px;
+    margin: 5px;
+}
+#settings{
+    background-color: #4F4F4F;
+    height: 360px;
+}
+#selected{
+    background-color: #4F4F4F;
+    height: auto;
 }
