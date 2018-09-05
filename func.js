@@ -18,19 +18,23 @@ function createWall(x,y) {
 
 function createPlayer(x,y) {
     remove(x,y);
+    remove(x-16,y-16);
     level.player = {'x':x,'y':y};
     drawAll();
 }
 
 function createGoal(x,y) {
     remove(x,y);
+    remove(x-16,y-16);
     level.goal = {'x':x,'y':y};
     drawAll();
 }
 
 function createTp(x,y) {
     remove(x,y);
+    remove(x-16,y-16);
     level.specials.push({'x':x,'y':y,'type':'teleporter',id:Math.floor(level.specials.length/2)});
+    selectSingle(x-16,y-16);
     drawAll();
 }
 
@@ -62,12 +66,14 @@ function remove(x,y) {
 // check if p is between min and max
 function between(p, min, max) {
     if (p>min && p<max) {return true}
+    else if (p>max && p<min) {return true}
     else return false
 }
 
 //check if p is between or equal to min and/or max
 function ibetween(p, min, max) {
     if (p>=min && p<=max) {return true}
+    else if (p>=max && p<=min) {return true}
     else return false
 }
 
@@ -77,6 +83,17 @@ function updateName() {
 
 function updateStars(id) {
     level.req[id] = Number(document.getElementById("level"+id+"star").value);
+}
+
+function updateId(x,y) {
+    var foundSpecials = level.specials.filter(e => e.x == x && e.y == y);
+    foundSpecials.forEach(function(e){
+        if (e.type === "teleporter") {
+            var ind = level.specials.indexOf(e);
+            level.specials[ind].id = Number(document.getElementById(''+e.x+','+e.y).value);
+            drawAll();
+        }
+    });
 }
 
 function drawCursorObject() {
@@ -96,7 +113,7 @@ function drawCursorObject() {
     } else if (placeItem.value === "player") {
         context.beginPath();
         context.arc(gridPos.x+16,gridPos.y+16,8,0,2*Math.PI);
-        context.fillStyle = "#5aF"
+        context.fillStyle = "#5fa"
         context.fill();
     } else if (placeItem.value === "goal") {
         context.beginPath();
@@ -122,6 +139,7 @@ function drawCursorObject() {
             y1=selectStart.y+by;y2=gridPos.y+grid.y-by;
             h=gridPos.y+grid.y-selectStart.y-2*by*(gridPos.y<selectStart.y);
             w=gridPos.x+grid.x-selectStart.x-2*bx*(gridPos.x<selectStart.x);
+            selectEnd = {x:gridPos.x+grid.x-bx, y:gridPos.y+grid.y-by};
 
         }
         context.strokeStyle = "#00F"
@@ -188,12 +206,69 @@ function drawAll() {
         if (e.type == 'teleporter'){
             context.beginPath();
             context.arc(e.x,e.y,16,0,2*Math.PI);
-            var r = Math.floor(2+e.id*2.33*Math.PI)%16;
-            var g = Math.floor(3+e.id*Math.PI*Math.PI)%16;
-            var b = Math.floor(4+e.id*13.88945*Math.PI)%16;
+            var r = Math.floor(10+e.id*2.33*Math.PI)%16;
+            var g = Math.floor(2+e.id*Math.PI*Math.PI)%16;
+            var b = Math.floor(2+e.id*13.88945*Math.PI)%16;
             context.fillStyle = "#"+r.toString(16)+g.toString(16)+b.toString(16)
             context.fill();
         }
     });
 
+}
+
+function selectSingle(x,y) {
+    deselect();
+    var foundWalls = level.walls.filter(e => e.x == x && e.y == y)
+    var foundSpecials = level.specials.filter(e => e.x-16 == x && e.y-16 == y)
+    var selectedHtmlDiv = document.getElementById('selected');
+    if (foundWalls.length > 0){
+        foundWalls.forEach(function(e){
+            console.log('wall')
+            console.log(e);
+        })
+    }
+    if (foundSpecials.length > 0){
+        foundSpecials.forEach(function(e){
+            if (e.type === "teleporter") {
+                selectedHtmlDiv.innerHTML = '<label>Teleporter ID: <input id="'+e.x+','+e.y+'" onchange="updateId('+e.x+','+e.y+')" type="number" min="0" max="49" value="'+e.id+'" /></label>'
+            }
+        })
+    }
+    if (level.player.x-16 == x && level.player.y-16 == y){
+        console.log('player')
+        console.log(level.player);
+    }
+    if (ibetween(x,level.goal.x-47,level.goal.x+31) && ibetween(y,level.goal.y-47,level.goal.y+31)){
+        console.log('goal')
+        console.log(level.goal);
+    }
+}
+
+function selectMultiple(x1,y1,x2,y2) {
+    deselect();
+    var foundWalls = level.walls.filter(e => ibetween(e.x, x1,x2) && ibetween(e.y, y1,y2));
+    var foundSpecials = level.specials.filter(e => ibetween(e.x-16, x1,x2) && ibetween(e.y-16, y1,y2));
+    var selectedObjects = [];
+    if (foundWalls.length > 0){
+        foundWalls.forEach(function(e){
+            console.log('+1');
+            selectedObjects.push(e);
+        })
+    }
+    if (foundSpecials.length > 0){
+        foundSpecials.forEach(function(e){
+            selectedObjects.push(e);
+        })
+    }
+    if (ibetween(level.player.x-16, x1,x2) && ibetween(level.player.y-16, y1,y2)){
+        selectedObjects.push(level.player);
+    }
+    if (ibetween(level.goal.x,x1,x2) && ibetween(level.goal.x,x1,x2)){
+        selectedObjects.push(level.goal);
+    }
+}
+
+function deselect(){
+    var selectedHtmlDiv = document.getElementById('selected');
+    selectedHtmlDiv.innerHTML = '';
 }

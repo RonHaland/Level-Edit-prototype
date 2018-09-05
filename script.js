@@ -2,6 +2,7 @@ const grid = {x:32,y:32};
 var mousePos, gridPos;
 var level = {'walls':[],'specials':[],'player':{},'goal':{},'name':'',"req":{"1":4000,"2":3000,"3":2000}};
 var selectStart = {x:0,y:0};
+var selectEnd = {x:0,y:0};
 var context, canvas, placeItem, mouseLeftPressed, mouseRightPressed;
 
 window.onload = function() {
@@ -18,7 +19,6 @@ window.onload = function() {
             y: Math.floor((mousePos.y)/grid.y)*grid.y
         }
         drawCursorObject();
-
     });
 
     canvas.addEventListener('mousedown', function(e) {
@@ -45,6 +45,13 @@ window.onload = function() {
     window.addEventListener('mouseup', function(e) {
         if (e.button == 0){
             mouseLeftPressed = false;
+            if (placeItem.value === "select"){
+                if (selectStart.x == gridPos.x && selectStart.y == gridPos.y){
+                    selectSingle(gridPos.x, gridPos.y);
+                } else {
+                    selectMultiple(selectStart.x, selectStart.y, selectEnd.x-1, selectEnd.y-1);
+                }
+            }
         } else if (e.button == 2) {
             mouseRightPressed = false;
         }
@@ -73,7 +80,6 @@ window.onload = function() {
                 break;
         }
         if (key <= '9' && key >= '0'){
-            console.log(123)
             drawCursorObject();
         }
     });
