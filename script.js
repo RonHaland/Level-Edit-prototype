@@ -41,8 +41,15 @@ window.onload = function() {
             remove(gridPos.x,gridPos.y);
         }
     });
-
     window.addEventListener('mouseup', function(e) {
+        if (e.button == 0){
+            mouseLeftPressed = false;
+        } else if(e.button == 2) {
+            mouseRightPressed = false;
+        }
+    });
+
+    canvas.addEventListener('mouseup', function(e) {
         if (e.button == 0){
             mouseLeftPressed = false;
             if (placeItem.value === "select"){

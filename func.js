@@ -269,6 +269,10 @@ function selectMultiple(x1,y1,x2,y2) {
 }
 
 function deselect(){
+    for (var i =0; i<level.walls.length; i++) {
+        level.walls[i].selected = false;
+        console.log(level.walls[i]);
+    }
     var selectedHtmlDiv = document.getElementById('selected');
     selectedHtmlDiv.innerHTML = '';
 }
