@@ -38,6 +38,13 @@ function createTp(x,y) {
     drawAll();
 }
 
+function createMover(x,y) {
+    remove(x,y);
+    level.specials.push({'x':x,'y':y,'type':'mover','length':1,'direction':'hor','distance':5});
+    selectSingle(x,y);
+    drawAll();
+}
+
 function remove(x,y) {
     var foundWalls = level.walls.filter(e => e.x == x && e.y == y)
     var foundSpecials = level.specials.filter(e => e.x-16 == x && e.y-16 == y)
@@ -125,6 +132,12 @@ function drawCursorObject() {
         context.arc(gridPos.x+16,gridPos.y+16,16,0,2*Math.PI);
         context.fillStyle = "#F55"
         context.fill();
+    } else if (placeItem.value === "mover"){
+        context.fillStyle = '#55A';
+        context.globalAlpha = 0.5;
+        context.fillRect(gridPos.x-64, gridPos.y,grid.x+128,grid.y);
+        context.fillStyle = '#AAA';
+        context.fillRect(gridPos.x, gridPos.y,grid.x,grid.y);
     } else if (placeItem.value === "select") {
         var x1,x2,y1,y2,w,h,bx,by;
         if (!mouseLeftPressed) {
@@ -189,6 +202,13 @@ function drawAll() {
     context.fillStyle='#aaa';
     level.walls.forEach(function(e) {
         context.fillRect(e.x,e.y,grid.x,grid.y);
+        if (e.selected) {
+            context.globalAlpha = 0.3;
+            context.fillStyle = "#55A"
+            context.fillRect(e.x,e.y,grid.x,grid.y);
+            context.fillStyle='#aaa';
+            context.globalAlpha = 1;
+        }
     });
     if ('x' in level.player && 'y' in level.player) {
         context.beginPath();
@@ -212,6 +232,25 @@ function drawAll() {
             context.fillStyle = "#"+r.toString(16)+g.toString(16)+b.toString(16)
             context.fill();
         }
+        else if (e.type == 'mover'){
+            context.fillStyle = '#55A'
+            context.globalAlpha = 0.3;
+            var xx = e.x - ((e.distance-1)/2)*grid.x*(e.direction === 'hor');
+            var yy = e.y - ((e.distance-1)/2)*grid.y*(e.direction === 'ver');
+            var w = 32 + 32 * (e.distance-1) *(e.direction === 'hor');
+            var h = 32 + 32 * (e.distance-1) *(e.direction === 'ver');
+            context.fillRect(xx,yy,w,h);
+            context.fillStyle = '#AAA';
+            context.fillRect(e.x,e.y,grid.x,grid.y);
+        }
+
+        if (e.selected) {
+            context.globalAlpha = 0.3;
+            context.fillStyle = "#55A"
+            context.fillRect(e.x-16,e.y-16,grid.x,grid.y);
+            context.fillStyle='#aaa';
+            context.globalAlpha = 1;
+        }
     });
 
 }
@@ -223,13 +262,13 @@ function selectSingle(x,y) {
     var selectedHtmlDiv = document.getElementById('selected');
     if (foundWalls.length > 0){
         foundWalls.forEach(function(e){
-            console.log('wall')
-            console.log(e);
+            e.selected = true;
         })
     }
     if (foundSpecials.length > 0){
         foundSpecials.forEach(function(e){
             if (e.type === "teleporter") {
+                e.selected = true;
                 selectedHtmlDiv.innerHTML = '<label>Teleporter ID: <input id="'+e.x+','+e.y+'" onchange="updateId('+e.x+','+e.y+')" type="number" min="0" max="49" value="'+e.id+'" /></label>'
             }
         })
@@ -251,28 +290,36 @@ function selectMultiple(x1,y1,x2,y2) {
     var selectedObjects = [];
     if (foundWalls.length > 0){
         foundWalls.forEach(function(e){
-            console.log('+1');
+            e.selected = true;
             selectedObjects.push(e);
         })
     }
     if (foundSpecials.length > 0){
         foundSpecials.forEach(function(e){
+            e.selected = true;
             selectedObjects.push(e);
         })
     }
     if (ibetween(level.player.x-16, x1,x2) && ibetween(level.player.y-16, y1,y2)){
         selectedObjects.push(level.player);
+        level.player.selected = true;
     }
     if (ibetween(level.goal.x,x1,x2) && ibetween(level.goal.x,x1,x2)){
         selectedObjects.push(level.goal);
+        level.goal.selected = true;
     }
 }
 
 function deselect(){
     for (var i =0; i<level.walls.length; i++) {
         level.walls[i].selected = false;
-        console.log(level.walls[i]);
+    }
+    for (var i =0; i<level.specials.length; i++) {
+        level.specials[i].selected = false;
     }
     var selectedHtmlDiv = document.getElementById('selected');
     selectedHtmlDiv.innerHTML = '';
+
+    drawAll();
+    drawCursorObject();
 }

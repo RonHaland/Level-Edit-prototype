@@ -32,6 +32,8 @@ window.onload = function() {
                 createGoal(gridPos.x,gridPos.y);
             } else if (placeItem.value === "tp"){
                 createTp(gridPos.x+16,gridPos.y+16);
+            } else if (placeItem.value === "mover"){
+                createMover(gridPos.x,gridPos.y);
             } else if (placeItem.value === "select"){
                 selectStart = {x: gridPos.x, y:gridPos.y};
             }
@@ -41,6 +43,7 @@ window.onload = function() {
             remove(gridPos.x,gridPos.y);
         }
     });
+
     window.addEventListener('mouseup', function(e) {
         if (e.button == 0){
             mouseLeftPressed = false;
@@ -69,6 +72,7 @@ window.onload = function() {
             return;
         }
         var key = (e.key || e.keyCode)
+        console.log(key);
         switch(key ) {
             case '1':
                 placeItem.value = 'wall';
@@ -81,6 +85,9 @@ window.onload = function() {
                 break;
             case '4':
                 placeItem.value = 'tp';
+                break;
+            case '5':
+                placeItem.value = 'mover';
                 break;
             case '0':
                 placeItem.value = 'select';
